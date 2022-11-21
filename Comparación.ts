@@ -7,7 +7,10 @@ import insertion from "./Insertion.ts";
 import { getSplitter } from "./SplitTime.ts";
 import { numberWithCommas } from "./numbersString.ts";
 
-const splitTime = getSplitter({ language: "es", variant: "symbols" });
+const humanize = true;
+const formatTime = humanize
+  ? getSplitter({ language: "es", variant: "symbols" })
+  : (n: number) => (Math.round(n * 10_000) / 10_000).toString();
 
 const log = false;
 
@@ -39,13 +42,13 @@ function test(generateArray: () => number[], seconds = 10) {
   ) as Record<keyof typeof métodos, ReturnType<typeof defaultDatos>>;
 
   for (const método of Object.keys(métodos) as (keyof typeof métodos)[]) {
-    if (log) console.log(`\n${método} ...`);
+    if (log) console.log(`\n${método}...`);
 
     let i = 0;
     let min = Infinity;
     let max = -Infinity;
     let tiempoTotal = 0;
-    // El for continuará mientras el algoritmo tenga tiempo
+    // El for continuará mientras haya tiempo
     for (; tiempoTotal < seconds; i++) {
       // Si no hay un siguiente arreglo, generar uno.
       if (!arreglos[i]) arreglos.push(generateArray());
@@ -64,14 +67,14 @@ function test(generateArray: () => number[], seconds = 10) {
     }
 
     // Establecer su promedio.
-    datos[método].Promedio = splitTime(tiempoTotal / i);
+    datos[método].Promedio = formatTime(tiempoTotal / i);
 
     // Establecer el tiempo mínimo y máximo.
-    datos[método].Min = splitTime(min);
-    datos[método].Max = splitTime(max);
+    datos[método].Min = formatTime(min);
+    datos[método].Max = formatTime(max);
 
     // Establecer el tiempo total.
-    datos[método]["Tiempo total"] = splitTime(tiempoTotal);
+    datos[método]["Tiempo total"] = formatTime(tiempoTotal);
 
     // Establecer el número de arreglos que logró ordenar.
     datos[método]["# arreglos"] = numberWithCommas(i);
@@ -79,16 +82,12 @@ function test(generateArray: () => number[], seconds = 10) {
     if (log) console.log(`${método} ${datos[método]["Tiempo total"]}`);
   }
 
-  // Imprimir las estadísticas, excepto el arreglo de tiempos
-  console.table(
-    datos,
-    Object.keys(defaultDatos()).filter((k) => k !== "tiempos")
-  );
+  // Imprimir las estadísticas
+  console.table(datos);
 }
 
 const getRandomArray = (length: number, min = 0, max = 1_000_000) =>
   new Array(length).fill(0).map(() => Math.floor(Math.random() * (max - min + 1)) + min);
-
 const sortedArray = new Array(100_000).fill(0).map((_, i) => i + 1);
 const sortedArrayReverse = sortedArray.reverse();
 

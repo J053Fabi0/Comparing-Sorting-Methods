@@ -8,9 +8,8 @@ const UNITS = {
   second: 1000,
   millisecond: 1,
 } as const;
-
 type Units = keyof typeof UNITS;
-type Variant = "extended" | "symbols";
+
 const simplePlural =
   (plural = "s") =>
   (time: number, base: string) =>
@@ -58,6 +57,7 @@ const word: Record<Languages, ReturnType<typeof createSimplePlural>> = {
 
 const separators: Record<Languages, string> = { es: "y", en: "and", eo: "kaj" };
 
+type Variant = "extended" | "symbols";
 interface Options {
   variant?: Variant;
   language?: keyof typeof word;
