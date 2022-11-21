@@ -8,7 +8,7 @@ import { getSplitter } from "./SplitTime.ts";
 import { numberWithCommas } from "./numbersString.ts";
 
 const humanize = true;
-const formatTime = humanize
+const formatearMs = humanize
   ? getSplitter({ language: "es", variant: "symbols" })
   : (n: number) => (Math.round(n * 10_000) / 10_000).toString();
 
@@ -31,9 +31,9 @@ const defaultDatos = () => ({
   ["Tiempo total"]: "",
 });
 
-function test(generateArray: () => number[], seconds = 10) {
+function test(generarArreglo: () => number[], seconds = 10) {
   seconds = seconds * 1000;
-  const arreglos = [generateArray()];
+  const arreglos = [generarArreglo()];
 
   // Inicializar el objeto que contendrá todos los datos
   const datos = Object.keys(métodos).reduce(
@@ -51,12 +51,12 @@ function test(generateArray: () => number[], seconds = 10) {
     // El for continuará mientras haya tiempo
     for (; tiempoTotal < seconds; i++) {
       // Si no hay un siguiente arreglo, generar uno.
-      if (!arreglos[i]) arreglos.push(generateArray());
+      if (!arreglos[i]) arreglos.push(generarArreglo());
 
       const arreglo = arreglos[i];
 
       const tiempo = Date.now(); // Tomar el tiempo de inicio.
-      métodos[método](arreglo); // Ordenarlo.
+      métodos[método](arreglo); // Ordenar el arreglo.
       const tiempoFinal = Date.now() - tiempo; // Calcular el tiempo final.
 
       tiempoTotal += tiempoFinal; // sumar al tiempo total
@@ -67,14 +67,14 @@ function test(generateArray: () => number[], seconds = 10) {
     }
 
     // Establecer su promedio.
-    datos[método].Promedio = formatTime(tiempoTotal / i);
+    datos[método].Promedio = formatearMs(tiempoTotal / i);
 
     // Establecer el tiempo mínimo y máximo.
-    datos[método].Min = formatTime(min);
-    datos[método].Max = formatTime(max);
+    datos[método].Min = formatearMs(min);
+    datos[método].Max = formatearMs(max);
 
     // Establecer el tiempo total.
-    datos[método]["Tiempo total"] = formatTime(tiempoTotal);
+    datos[método]["Tiempo total"] = formatearMs(tiempoTotal);
 
     // Establecer el número de arreglos que logró ordenar.
     datos[método]["# arreglos"] = numberWithCommas(i);
