@@ -39,8 +39,8 @@ const createSimplePlural = (
           },
         },
       }),
-    {}
-  ) as Record<Units, { extended: Translator; symbols?: Translator }>;
+    {} as Record<Units, Record<Variant, Translator>>
+  );
 
 const languages = ["es", "eo", "en"] as const;
 type Languages = typeof languages[number];
@@ -74,10 +74,7 @@ export default function splitTime(
 
   const translate = (() => {
     const translator = word[language];
-    return (unitName: Units, ms: number) =>
-      (variant === "symbols" && translator[unitName].symbols
-        ? translator[unitName].symbols!
-        : translator[unitName].extended)(ms);
+    return (unitName: Units, ms: number) => translator[unitName][variant](ms);
   })();
 
   if (ms < 1) return translate("millisecond", ms);
