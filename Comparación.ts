@@ -82,15 +82,19 @@ function test(generarArreglo: () => number[], seconds = 10) {
     if (log) console.log(`${método} ${datos[método]["Tiempo total"]}`);
   }
 
-  // Imprimir las estadísticas
+  // Imprimir los datos en formato de tabla
   console.table(datos);
 }
 
+// Esta función genera un arreglo de "length" elementos entre min y max.
 const getRandomArray = (length: number, min = 0, max = 1_000_000) =>
   new Array(length).fill(0).map(() => Math.floor(Math.random() * (max - min + 1)) + min);
+// Este es el arreglo de números ordenados del 1 al 100,000
 const sortedArray = new Array(100_000).fill(0).map((_, i) => i + 1);
+// El mismo arreglo anterior, pero en orden inverso
 const sortedArrayReverse = sortedArray.reverse();
 
+// Estos son los tests que se ejecutarán
 const tests: Array<{ title: string; generator: () => number[]; seconds?: number }> = [
   {
     title: "100 elementos al azar",
@@ -118,6 +122,7 @@ const tests: Array<{ title: string; generator: () => number[]; seconds?: number 
   },
 ];
 
+// Se ejecutan los tests uno a uno
 for (const { title, generator, seconds } of tests) {
   console.log("\n" + title);
   test(generator, seconds);
